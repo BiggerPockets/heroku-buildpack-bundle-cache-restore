@@ -24,26 +24,7 @@ mkdir -p $build_dir/vendor/cache
 aws_bin=$tmp_dir/aws/dist/aws
 
 gemfile_checksum=$(gemfile_checksum)
-
-AWS_ACCESS_KEY_ID=$(get_env_variable ${env_dir} "AWS_ACCESS_KEY_ID") \
-    AWS_SECRET_ACCESS_KEY=$(get_env_variable ${env_dir} "AWS_SECRET_ACCESS_KEY") \
-
 aws_bundle_cache_path=$(get_env_variable ${env_dir} "AWS_BUNDLE_CACHE_PATH")
-
-echo "aws_bundle_cache_path: ${aws_bundle_cache_path}"
-
 gemfile_s3_file_path="${aws_bundle_cache_path}/${gemfile_checksum}.tar"
 
-echo "Checking for Gemfile.lock in S3..."
-
-aws_bundle_cache_bucket=$(get_env_variable ${env_dir} "AWS_BUNDLE_CACHE_BUCKET")
-echo $aws_bundle_cache_bucket
-echo $gemfile_s3_file_path
-
-$aws_bin s3api head-object --bucket "${aws_bundle_cache_bucket}" --key "${gemfile_s3_file_path}"
-
-if $aws_bin s3api head-object --bucket "${aws_bundle_cache_bucket}" --key "${gemfile_s3_file_path}" 2>/dev/null; then
-  echo "File already exists in S3."
-else
-  echo "File does not exist in S3."
-fi
+check_file_exists $aws_bin $gemfile_s3_file_path
