@@ -15,19 +15,23 @@ require_env_variable $env_dir "AWS_SECRET_ACCESS_KEY"
 require_env_variable $env_dir "AWS_BUNDLE_CACHE_BUCKET"
 require_env_variable $env_dir "AWS_BUNDLE_CACHE_PATH"
 
-curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o $tmp_dir/aws.zip
-unzip -qq -d $tmp_dir $tmp_dir/aws.zip
-rm $tmp_dir/aws.zip
-chmod +x $tmp_dir/aws/dist/aws
+if [ -z "$(ls -A $cache_dir)"]; then
+  curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o $tmp_dir/aws.zip
+  unzip -qq -d $tmp_dir $tmp_dir/aws.zip
+  rm $tmp_dir/aws.zip
+  chmod +x $tmp_dir/aws/dist/aws
 
-aws_bin=$tmp_dir/aws/dist/aws
+  aws_bin=$tmp_dir/aws/dist/aws
 
-cache_checksum=$(cache_checksum)
-aws_bundle_cache_path=$(get_env_variable ${env_dir} "AWS_BUNDLE_CACHE_PATH")
-cache_s3_file_path="${aws_bundle_cache_path}/${cache_checksum}.tar.gz"
+  cache_checksum=$(cache_checksum)
+  aws_bundle_cache_path=$(get_env_variable ${env_dir} "AWS_BUNDLE_CACHE_PATH")
+  cache_s3_file_path="${aws_bundle_cache_path}/${cache_checksum}.tar.gz"
 
-if check_file_exists "$aws_bin" "$cache_s3_file_path" -eq 0; then
-  download_file "$aws_bin" "$cache_s3_file_path" "${tmp_dir}/bundle_cache.tar.gz"
-  tar -xf "${tmp_dir}/bundle_cache.tar.gz" -C $cache_dir
-  rm $tmp_dir/bundle_cache.tar.gz
+  if check_file_exists "$aws_bin" "$cache_s3_file_path" -eq 0; then
+    download_file "$aws_bin" "$cache_s3_file_path" "${tmp_dir}/bundle_cache.tar.gz"
+    tar -xf "${tmp_dir}/bundle_cache.tar.gz" -C $cache_dir
+    rm $tmp_dir/bundle_cache.tar.gz
+  fi
+else
+  echo "Local cache already exists; no further action required." | indent
 fi
