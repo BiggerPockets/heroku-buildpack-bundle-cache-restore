@@ -28,6 +28,6 @@ gemfile_s3_file_path="${aws_bundle_cache_path}/${gemfile_checksum}.tar.gz"
 
 if check_file_exists "$aws_bin" "$gemfile_s3_file_path" -eq 0; then
   download_file "$aws_bin" "$gemfile_s3_file_path" "${tmp_dir}/bundle_cache.tar.gz"
-  tar -xvf "${tmp_dir}/bundle_cache.tar.gz" -C $cache_dir
+  tar -xf "${tmp_dir}/bundle_cache.tar.gz" -C $cache_dir
   rm $tmp_dir/bundle_cache.tar.gz
 fi
