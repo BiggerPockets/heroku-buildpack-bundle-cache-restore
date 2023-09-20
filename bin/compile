@@ -24,10 +24,10 @@ aws_bin=$tmp_dir/aws/dist/aws
 
 gemfile_checksum=$(gemfile_checksum)
 aws_bundle_cache_path=$(get_env_variable ${env_dir} "AWS_BUNDLE_CACHE_PATH")
-gemfile_s3_file_path="${aws_bundle_cache_path}/${gemfile_checksum}.tar"
+gemfile_s3_file_path="${aws_bundle_cache_path}/${gemfile_checksum}.tar.gz"
 
 if check_file_exists "$aws_bin" "$gemfile_s3_file_path" -eq 0; then
-  download_file "$aws_bin" "$gemfile_s3_file_path" "${tmp_dir}/bundle_cache.tar"
-  tar -xvf "${tmp_dir}/bundle_cache.tar" -C $cache_dir
-  rm $tmp_dir/bundle_cache.tar
+  download_file "$aws_bin" "$gemfile_s3_file_path" "${tmp_dir}/bundle_cache.tar.gz"
+  tar -xvf "${tmp_dir}/bundle_cache.tar.gz" -C $cache_dir
+  rm $tmp_dir/bundle_cache.tar.gz
 fi
