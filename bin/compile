@@ -22,12 +22,12 @@ chmod +x $tmp_dir/aws/dist/aws
 
 aws_bin=$tmp_dir/aws/dist/aws
 
-gemfile_checksum=$(gemfile_checksum)
+cache_checksum=$(cache_checksum)
 aws_bundle_cache_path=$(get_env_variable ${env_dir} "AWS_BUNDLE_CACHE_PATH")
-gemfile_s3_file_path="${aws_bundle_cache_path}/${gemfile_checksum}.tar.gz"
+cache_s3_file_path="${aws_bundle_cache_path}/${cache_checksum}.tar.gz"
 
-if check_file_exists "$aws_bin" "$gemfile_s3_file_path" -eq 0; then
-  download_file "$aws_bin" "$gemfile_s3_file_path" "${tmp_dir}/bundle_cache.tar.gz"
+if check_file_exists "$aws_bin" "$cache_s3_file_path" -eq 0; then
+  download_file "$aws_bin" "$cache_s3_file_path" "${tmp_dir}/bundle_cache.tar.gz"
   tar -xf "${tmp_dir}/bundle_cache.tar.gz" -C $cache_dir
   rm $tmp_dir/bundle_cache.tar.gz
 fi
